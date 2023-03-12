@@ -24,4 +24,8 @@ Requires **[Python 3.11](https://www.python.org/downloads/)** or later.
 ```
 python -m pip install pyinstaller
 ```
-2. Run `pyinstaller --onefile -n utdemofinder --clean --noconsole main.py`
+2. Install dependencies
+```
+python -m pip install -r requirements.txt
+```
+3. Run `pyinstaller --onefile -n utdemofinder --clean --noconsole main.py`
