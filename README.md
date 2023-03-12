@@ -1,5 +1,7 @@
 ## utdemofinder
 
+**[Download Latest (.exe)](https://github.com/jack-avery/utdemofinder/releases/latest/download/utdemofinder.exe)**
+
 **utdemofinder** is a utility program for the video game servers **Uncletopia** for **Team Fortress 2** to provide a simple user interface for moderators to search for SourceTV demos for specific users, including games played with other users.
 
 ![utdemofinder](https://cdn.discordapp.com/attachments/989252507102511124/1084584578871730317/image.png)
