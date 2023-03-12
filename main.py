@@ -8,29 +8,25 @@
 import requests
 import re
 import tkinter as tk
-version = '1.0.1'
+version = '1.0.2'
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
 
 class Application:
     def __init__(self):
-        # create the window
         self.root = tk.Tk()
         self.root.geometry('480x280')
         self.root.title(f"utdemofinder {version}")
         self.root.configure(bg="#444444")
         self.root.resizable(0, 0)
 
-        # build UI
-        # id64
         tk.Label(master=self.root, text="Steam ID64:", bg="#444444", fg="white")\
             .place(x=0, y=0, width=64, height=24)
         self.search_id64 = tk.Text(
             master=self.root, bg="#444444", fg="white", height=1, width=8)
         self.search_id64.place(x=70, y=0, width=410, height=24)
 
-        # map
         tk.Label(master=self.root, text="Map:", bg="#444444", fg="white")\
             .place(x=0, y=24, width=64, height=24)
         self.search_map = tk.Text(
@@ -43,16 +39,13 @@ class Application:
             master=self.root, bg="#444444", fg="white", height=1, width=8)
         self.search_with.place(x=70, y=48, width=410, height=24)
 
-        # logging info box for user notification
         self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
         self.infobox.place(x=0, y=108, width=480, height=172)
 
-        # build the start and restore buttons but do not embed them for now.
         self.go = tk.Button(
             text="Go", command=self.get_demos, bg="#004400", fg="white")
         self.go.place(x=0, y=72, width=480, height=36)
 
-        # open window and inform user to select a directory
         self.log("Enter a Steam ID64 and press Go.")
         self.log("A new window will open up with the results.")
         self.log("\"Map\" and \"Played With\" are optional.")
@@ -97,9 +90,9 @@ class Application:
         response = requests.post("https://uncletopia.com/api/demos", json=data, headers=headers)
         if response.status_code != 201:
             self.log(f"Returned {response.status_code}: cannot continue")
+            return
 
         result = response.json()["result"]
-
         if not result:
             self.log(f"Couldn't find any demos for this user!")
             return
@@ -126,13 +119,11 @@ class Application:
 
 class ResultsWindow:
     def __init__(self, resultslist: list):
-        # create the window
         self.root = tk.Tk()
         self.root.geometry('480x280')
         self.root.title(f"utdemofinder {version}: results")
         self.root.configure(bg="#444444")
 
-        # create results box and populate
         self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
         self.infobox.pack(fill=tk.BOTH, expand=1)
 
@@ -145,4 +136,4 @@ class ResultsWindow:
             self.infobox.insert(tk.END, "")
 
 if __name__ == "__main__":
-    app = Application()
+    _ = Application()
