@@ -79,12 +79,7 @@ class Application:
 
         headers = {
             "Content-Type": "application/json; charset=UTF-8",
-            "Accept": "*/*",
-            "Host": "uncletopia.com",
-            "Origin": "https://uncletopia.com",
-            "Referer": "https://uncletopia.com/stv",
-            "Pragma": "no-cache",
-            "Cache-Control": "no-cache",
+            "Accept": "*/*"
         }
 
         response = requests.post("https://uncletopia.com/api/demos", json=data, headers=headers)
