@@ -8,7 +8,7 @@
 import requests
 import re
 import tkinter as tk
-version = '1.0.0'
+version = '1.0.1'
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
@@ -29,7 +29,7 @@ class Application:
         self.search_id64 = tk.Text(
             master=self.root, bg="#444444", fg="white", height=1, width=8)
         self.search_id64.place(x=70, y=0, width=410, height=24)
-        
+
         # map
         tk.Label(master=self.root, text="Map:", bg="#444444", fg="white")\
             .place(x=0, y=24, width=64, height=24)
@@ -57,7 +57,7 @@ class Application:
         self.log("A new window will open up with the results.")
         self.log("\"Map\" and \"Played With\" are optional.")
         tk.mainloop()
-    
+
     def get_demos(self):
         """
         Get the demos with the options specified.
@@ -72,12 +72,12 @@ class Application:
         if not STEAMID_RE.match(id):
             self.log("Invalid ID64 for \"Steam ID\".")
             return
-        
+
         if id_with:
             if not STEAMID_RE.match(id_with):
                 self.log("Invalid ID64 for \"Played With\".")
                 return
-        
+
         data = {
             "steamId":id,
             "mapName":map,
@@ -97,9 +97,15 @@ class Application:
         response = requests.post("https://uncletopia.com/api/demos", json=data, headers=headers)
         if response.status_code != 201:
             self.log(f"Returned {response.status_code}: cannot continue")
+
         result = response.json()["result"]
+
+        if not result:
+            self.log(f"Couldn't find any demos for this user!")
+            return
+
         self.log(f"Found {len(result)} demo(s)")
-        
+
         if id_with:
             self.log(f"Sorting to demos with {id_with}...")
             sorted = []
@@ -110,7 +116,7 @@ class Application:
             self.log(f"Cut down to {len(result)}")
 
         _ = ResultsWindow(result)
-    
+
     def log(self, l: str):
         """
         Log information to the info box and force the view to the bottom.
