@@ -2,7 +2,7 @@
 
 **utdemofinder** is a utility program for the video game servers **Uncletopia** for **Team Fortress 2** to provide a simple user interface for moderators to search for SourceTV demos for specific users, including games played with other users.
 
-![utdemofinder](https://cdn.discordapp.com/attachments/989252507102511124/1084584578871730317/image.png)
+![utdemofinder](https://cdn.discordapp.com/attachments/488850419301220352/1084981187388375100/image.png)
 
 ## Usage
 1. Download and install [Python version 3.11.0+](https://www.python.org/downloads/), ensuring you tick "Add python.exe to PATH" at the bottom of the first screen.
