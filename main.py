@@ -32,11 +32,11 @@ class Application:
                 cfg = json.loads(cfgfile.read())
             demo_folder = cfg["demo_folder"]
 
-        tk.Label(master=self.root, text="TF2 Folder:", bg="#444444", fg="white")\
-            .place(x=0, y=0, width=64, height=24)
+        tk.Label(master=self.root, text="Demo folder:", bg="#444444", fg="white")\
+            .place(x=0, y=0, width=70, height=24)
         self.folder_input = tk.Text(
             master=self.root, bg="#444444", fg="white", height=1, width=8, wrap="none")
-        self.folder_input.place(x=70, y=0, width=410, height=24)
+        self.folder_input.place(x=76, y=0, width=404, height=24)
         self.folder_input.insert(tk.END, demo_folder)
 
         tk.Label(master=self.root, text="Steam ID64:", bg="#444444", fg="white")\
