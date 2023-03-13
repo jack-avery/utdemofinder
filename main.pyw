@@ -12,7 +12,7 @@ import re
 import tkinter as tk
 from tkinter import filedialog
 import urllib3
-version = '1.1.0'
+version = '1.2.0'
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
