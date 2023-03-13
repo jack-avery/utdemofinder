@@ -9,9 +9,10 @@
 2. Download the Source Code:
 > Using [git](https://git-scm.com/downloads): `git clone https://github.com/jack-avery/utdemofinder` <br/>
 > Or, click on **Code** at the top right and **Download ZIP**.
-3. Install dependencies by running `python -m pip install -r requirements.txt`.
-4. Insert a valid ID into the Steam ID64 field.
+3. Install dependencies: `python -m pip install -r requirements.txt`.
+4. Open `main.py`.
+5. Insert a valid ID into the Steam ID64 field.
 > This normally looks something like `76561198027298961`<br/>
-5. Press `Go` and the results window will open.
+6. Press `Go` and the results window will open.
 
 You can get the demo from this by clicking on the link, pressing `Ctrl+C`, and entering it into your web browser.
