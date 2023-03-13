@@ -129,7 +129,7 @@ class Application:
             results = sorted
             self.log(f"Cut down to {len(results)}")
 
-        _ = ResultsWindow(results)
+        _ = ResultsWindow(id, results)
 
     def log(self, l: str):
         """
@@ -139,11 +139,13 @@ class Application:
         self.infobox.yview(tk.END)
 
 class ResultsWindow:
-    def __init__(self, resultslist: list):
+    def __init__(self, uid: str, resultslist: list):
         self.root = tk.Tk()
         self.root.geometry('480x280')
         self.root.title(f"utdemofinder {version}: results")
         self.root.configure(bg="#444444")
+
+        self.uid = uid
 
         self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
         self.infobox.place(x=0, y=0, width=480, height=256)
@@ -166,6 +168,8 @@ class ResultsWindow:
         filename = filedialog.asksaveasfilename(
             defaultextension=".txt",
             filetypes=[('Text files', '*.txt')],
+            initialdir=os.curdir,
+            initialfile=f"utdemofinder results - {self.uid}"
         )
 
         if filename:
