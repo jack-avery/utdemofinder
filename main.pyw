@@ -187,8 +187,8 @@ class ResultsWindow:
         self.result_text.insert(tk.END, f"Result #{index+1} of {len(self.resultslist)}:\n")
         self.result_text.insert(tk.END, self.text_result(self.resultslist[index]))
 
-    def download_demo(self, index: int = 0):
-        result = self.resultslist[index]
+    def download_demo(self):
+        result = self.resultslist[self.viewindex]
         url = f"https://uncletopia.com/demos/{result['demo_id']}"
         path = f"{self.demofolder}/{result['title']}"
 
