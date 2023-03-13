@@ -15,4 +15,4 @@
 > This normally looks something like `76561198027298961`<br/>
 6. Press `Go` and the results window will open.
 
-You can get the demo from this by clicking on the link, pressing `Ctrl+C`, and entering it into your web browser.
+I recommend you enter your `steamapps/common/Team Fortress 2/tf` folder into the "Demo folder" field so that you can download demos directly into your TF2 folder for easy access through `demoui`.
