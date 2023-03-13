@@ -113,23 +113,23 @@ class Application:
             self.log(f"Returned {response.status_code}: cannot continue")
             return
 
-        result = response.json()["result"]
-        if not result:
+        results = response.json()["result"]
+        if not results:
             self.log(f"Couldn't find any demos for this user!")
             return
 
-        self.log(f"Found {len(result)} demo(s)")
+        self.log(f"Found {len(results)} demo(s)")
 
         if id_with:
             self.log(f"Sorting to demos with {id_with}...")
             sorted = []
-            for result in result:
+            for result in results:
                 if id_with in result['stats']:
                     sorted.append(result)
-            result = sorted
-            self.log(f"Cut down to {len(result)}")
+            results = sorted
+            self.log(f"Cut down to {len(results)}")
 
-        _ = ResultsWindow(result)
+        _ = ResultsWindow(results)
 
     def log(self, l: str):
         """
