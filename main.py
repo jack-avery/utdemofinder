@@ -10,6 +10,7 @@ import os
 import requests
 import re
 import tkinter as tk
+from tkinter import filedialog
 version = '1.0.2'
 
 STEAMID_RE = re.compile(r"\d+")
@@ -57,9 +58,8 @@ class Application:
             master=self.root, bg="#444444", fg="white", height=1, width=8, wrap="none")
         self.search_with.place(x=70, y=72, width=410, height=24)
 
-        self.go = tk.Button(
-            text="Go", command=self.get_demos, bg="#004400", fg="white")
-        self.go.place(x=0, y=96, width=480, height=36)
+        tk.Button(self.root, text="Go", command=self.get_demos, bg="#004400", fg="white")\
+            .place(x=0, y=96, width=480, height=36)
 
         self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
         self.infobox.place(x=0, y=132, width=480, height=148)
@@ -146,15 +146,31 @@ class ResultsWindow:
         self.root.configure(bg="#444444")
 
         self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
-        self.infobox.pack(fill=tk.BOTH, expand=1)
+        self.infobox.place(x=0, y=0, width=480, height=256)
 
+        tk.Button(self.root, text="Save to file", command=self.save_to_file, bg="#004400", fg="white")\
+            .place(x=0, y=256, width=80, height=24)
+
+        self.resultslist_raw = ""
         for i, result in enumerate(resultslist):
-            self.infobox.insert(tk.END, f"Result #{i+1}:")
-            self.infobox.insert(tk.END, f"https://uncletopia.com/demos/{result['demo_id']}")
-            self.infobox.insert(tk.END, f"Server: {result['server_name_long']} ({result['server_name_short']})")
-            self.infobox.insert(tk.END, f"Map: {result['map_name']}")
-            self.infobox.insert(tk.END, f"Time: {result['created_on']}")
-            self.infobox.insert(tk.END, "")
+            self.resultslist_raw += f"Result #{i+1}:\n"
+            self.resultslist_raw += f"https://uncletopia.com/demos/{result['demo_id']}\n"
+            self.resultslist_raw += f"Server: {result['server_name_long']} ({result['server_name_short']})\n"
+            self.resultslist_raw += f"Map: {result['map_name']}\n"
+            self.resultslist_raw += f"Time: {result['created_on']}\n\n"
+
+        for line in self.resultslist_raw.split("\n"):
+            self.infobox.insert(tk.END, line)
+
+    def save_to_file(self):
+        filename = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[('Text files', '*.txt')],
+        )
+
+        if filename:
+            with open(filename, "w") as file:
+                file.write(self.resultslist_raw)
 
 if __name__ == "__main__":
     _ = Application()
