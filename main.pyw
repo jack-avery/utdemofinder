@@ -11,6 +11,7 @@ import requests
 import re
 import tkinter as tk
 from tkinter import filedialog
+import urllib3
 version = '1.1.0'
 
 STEAMID_RE = re.compile(r"\d+")
@@ -129,7 +130,7 @@ class Application:
             results = sorted
             self.log(f"Cut down to {len(results)}")
 
-        _ = ResultsWindow(id, results)
+        _ = ResultsWindow(demofolder, id, results)
 
     def log(self, l: str):
         """
@@ -139,30 +140,75 @@ class Application:
         self.infobox.yview(tk.END)
 
 class ResultsWindow:
-    def __init__(self, uid: str, resultslist: list):
+    def __init__(self, demofolder: str, uid: str, resultslist: list):
         self.root = tk.Tk()
-        self.root.geometry('480x280')
+        self.root.geometry('480x128')
         self.root.title(f"utdemofinder {version}: results")
         self.root.configure(bg="#444444")
+        self.root.resizable(0, 0)
 
+        self.demofolder = demofolder
         self.uid = uid
+        self.resultslist = resultslist
+        self.viewindex = 0
 
-        self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
-        self.infobox.place(x=0, y=0, width=480, height=256)
+        tk.Button(self.root, text="Save all results to file", command=self.save_to_file, bg="#555555", fg="white")\
+            .place(x=0, y=0, width=128, height=24)
+        tk.Button(self.root, text="Download this results' demo", command=self.download_demo, bg="#555555", fg="white")\
+            .place(x=130, y=0, width=164, height=24)
 
-        tk.Button(self.root, text="Save to file", command=self.save_to_file, bg="#004400", fg="white")\
-            .place(x=0, y=256, width=80, height=24)
+        tk.Button(self.root, text="<", command=self.display_last, bg="#444444", fg="white")\
+            .place(x=0, y=24, width=24, height=104)
+        tk.Button(self.root, text=">", command=self.display_next, bg="#444444", fg="white")\
+            .place(x=456, y=24, width=24, height=104)
+        
+        self.result_text = tk.Text(self.root, bg="#444444", fg="white")
+        self.result_text.place(x=24, y=24, width=438, height=104)
 
-        self.resultslist_raw = ""
-        for i, result in enumerate(resultslist):
-            self.resultslist_raw += f"Result #{i+1}:\n"
-            self.resultslist_raw += f"https://uncletopia.com/demos/{result['demo_id']}\n"
-            self.resultslist_raw += f"Server: {result['server_name_long']} ({result['server_name_short']})\n"
-            self.resultslist_raw += f"Map: {result['map_name']}\n"
-            self.resultslist_raw += f"Time: {result['created_on']}\n\n"
+        self.display_result()
+        tk.mainloop()
+    
+    def display_last(self):
+        if self.viewindex == 0:
+            return
+        
+        self.viewindex -= 1
+        self.display_result(self.viewindex)
+    
+    def display_next(self):
+        if self.viewindex == len(self.resultslist)-1:
+            return
+        
+        self.viewindex += 1
+        self.display_result(self.viewindex)
 
-        for line in self.resultslist_raw.split("\n"):
-            self.infobox.insert(tk.END, line)
+    def display_result(self, index: int = 0):
+        self.result_text.delete("1.0", "end-1c")
+        self.result_text.insert(tk.END, f"Result #{index+1} of {len(self.resultslist)}:\n")
+        self.result_text.insert(tk.END, self.text_result(self.resultslist[index]))
+
+    def download_demo(self, index: int = 0):
+        result = self.resultslist[index]
+        url = f"https://uncletopia.com/demos/{result['demo_id']}"
+        path = f"{self.demofolder}/{result['title']}"
+
+        http = urllib3.PoolManager()
+        r = http.request('GET', url, preload_content=False)
+        with open(path, 'wb') as out:
+            while True:
+                data = r.read(4096)
+                if not data:
+                    break
+                out.write(data)
+        r.release_conn()
+    
+    def text_result(self, result):
+        text = ""
+        text += f"https://uncletopia.com/demos/{result['demo_id']}\n"
+        text += f"Server: {result['server_name_long']} ({result['server_name_short']})\n"
+        text += f"Map: {result['map_name']}\n"
+        text += f"Time: {result['created_on']}\n\n"
+        return text
 
     def save_to_file(self):
         filename = filedialog.asksaveasfilename(
@@ -172,9 +218,15 @@ class ResultsWindow:
             initialfile=f"utdemofinder results - {self.uid}"
         )
 
-        if filename:
-            with open(filename, "w") as file:
-                file.write(self.resultslist_raw)
+        if not filename:
+            return
+
+        resultslist_raw = ""
+        for result in self.resultslist:
+            resultslist_raw += self.text_result(result)
+
+        with open(filename, "w") as file:
+            file.write(resultslist_raw)
 
 if __name__ == "__main__":
     _ = Application()
