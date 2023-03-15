@@ -13,7 +13,7 @@ import tkinter as tk
 from tkinter import filedialog
 import urllib3
 
-version = "1.2.3"
+version = "1.2.4"
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
@@ -163,23 +163,20 @@ class Application:
         if response.status_code != 201:
             self.log(f"Returned {response.status_code}: cannot continue")
             return
-
         results = response.json()["result"]
-        if not results:
-            self.log(f"Couldn't find any demos for this user!")
-            return
 
-        self.log(f"Found {len(results)} demo(s)")
-
-        if id_with:
-            self.log(f"Sorting to demos with {id_with}...")
+        if id_with and results:
             sorted = []
             for result in results:
                 if id_with in result["stats"]:
                     sorted.append(result)
             results = sorted
-            self.log(f"Cut down to {len(results)}")
 
+        if not results:
+            self.log(f"Couldn't find any demos with this criteria!")
+            return
+
+        self.log(f"Found {len(results)} demo(s)")
         _ = ResultsWindow(demofolder, id, results)
 
     def log(self, l: str):
@@ -209,7 +206,7 @@ class ResultsWindow:
         """
         self.root = tk.Tk()
         self.root.geometry("480x128")
-        self.root.title(f"utdemofinder {version}: results")
+        self.root.title(f"utdemofinder {version} results: {uid}")
         self.root.configure(bg="#444444")
         self.root.resizable(0, 0)
 
