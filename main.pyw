@@ -12,7 +12,7 @@ import re
 import tkinter as tk
 from tkinter import filedialog
 import urllib3
-version = '1.2.2'
+version = '1.2.3'
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
@@ -230,7 +230,7 @@ class ResultsWindow:
         Display the previous result if applicable.
         """
         if self.viewindex == 0:
-            return
+            self.viewindex = len(self.resultslist)
         
         self.viewindex -= 1
         self.display_result(self.viewindex)
@@ -240,7 +240,7 @@ class ResultsWindow:
         Display the next result if applicable.
         """
         if self.viewindex == len(self.resultslist)-1:
-            return
+            self.viewindex = -1
         
         self.viewindex += 1
         self.display_result(self.viewindex)
