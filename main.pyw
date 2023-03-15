@@ -12,7 +12,7 @@ import re
 import tkinter as tk
 from tkinter import filedialog
 import urllib3
-version = '1.2.1'
+version = '1.2.2'
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
@@ -57,21 +57,21 @@ class Application:
         tk.Label(master=self.root, text="Steam ID64:", bg="#444444", fg="white")\
             .place(x=0, y=24, width=64, height=24)
         self.search_id64 = tk.Text(
-            master=self.root, bg="#444444", fg="white", height=1, width=8, wrap="none")
+            master=self.root, bg="#333333", fg="white", height=1, width=8, wrap="none")
         self.search_id64.place(x=70, y=24, width=410, height=24)
 
         # Map: [Text Input]
         tk.Label(master=self.root, text="Map:", bg="#444444", fg="white")\
             .place(x=0, y=48, width=64, height=24)
         self.search_map = tk.Text(
-            master=self.root, bg="#444444", fg="white", height=1, width=8, wrap="none")
+            master=self.root, bg="#333333", fg="white", height=1, width=8, wrap="none")
         self.search_map.place(x=70, y=48, width=410, height=24)
 
         # Played With: [Text Input]
         tk.Label(master=self.root, text="Played With:", bg="#444444", fg="white")\
             .place(x=0, y=72, width=64, height=24)
         self.search_with = tk.Text(
-            master=self.root, bg="#444444", fg="white", height=1, width=8, wrap="none")
+            master=self.root, bg="#333333", fg="white", height=1, width=8, wrap="none")
         self.search_with.place(x=70, y=72, width=410, height=24)
 
         # [Go]
@@ -79,7 +79,7 @@ class Application:
             .place(x=0, y=96, width=480, height=36)
 
         # Activity Log
-        self.infobox = tk.Listbox(self.root, bg="#444444", fg="white")
+        self.infobox = tk.Listbox(self.root, bg="#333333", fg="white")
         self.infobox.place(x=0, y=132, width=480, height=148)
 
         self.log("Enter a Steam ID64 and press Go.")
@@ -207,10 +207,10 @@ class ResultsWindow:
         self.viewindex = 0
 
         # User Tools
-        tk.Button(self.root, text="Save all results to file", command=self.save_to_file, bg="#555555", fg="white")\
-            .place(x=0, y=0, width=128, height=24)
-        tk.Button(self.root, text="Download this results' demo", command=self.download_demo, bg="#555555", fg="white")\
-            .place(x=130, y=0, width=164, height=24)
+        tk.Button(self.root, text="Save all to file", command=self.save_to_file, bg="#555555", fg="white")\
+            .place(x=0, y=0, width=86, height=24)
+        tk.Button(self.root, text="Download demo", command=self.download_demo, bg="#555555", fg="white")\
+            .place(x=88, y=0, width=102, height=24)
         
         # Navigation buttons
         tk.Button(self.root, text="<", command=self.display_last, bg="#444444", fg="white")\
@@ -219,7 +219,7 @@ class ResultsWindow:
             .place(x=456, y=24, width=24, height=104)
         
         # Result Info Box
-        self.result_text = tk.Text(self.root, bg="#444444", fg="white")
+        self.result_text = tk.Text(self.root, bg="#333333", fg="white")
         self.result_text.place(x=24, y=24, width=438, height=104)
 
         self.display_result()
@@ -251,9 +251,11 @@ class ResultsWindow:
 
         :param index: The index in `resultslist` to display.
         """
+        self.result_text.configure(state=tk.NORMAL)
         self.result_text.delete("1.0", "end-1c")
         self.result_text.insert(tk.END, f"Result #{index+1} of {len(self.resultslist)}:\n")
         self.result_text.insert(tk.END, self.text_result(self.resultslist[index]))
+        self.result_text.configure(state=tk.DISABLED)
 
     def download_demo(self):
         """
