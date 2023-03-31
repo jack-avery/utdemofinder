@@ -10,16 +10,25 @@ class ResultsWindow:
     """
     `tkinter`-based GUI for displaying user demos obtained using `src.search.SearchWindow`.
     """
+    demofolder: str
+    """The folder to save demos obtained through the 'Download demo' button to."""
+
+    uid: str
+    """The Steam ID64 that the demos in this result set belongs to."""
+
+    resultslist: list
+    """An array of dictionaries representing each demo found from `uncletopia.com/api/demos` and related metadata."""
+
 
     def __init__(self, demofolder: str, uid: str, resultslist: list):
         """
         Create a new instance of a `utdemofinder` results GUI window.
 
-        :param demofolder: The folder to save demos to when the "`Download this results' demo`" button is clicked.
+        :param demofolder: The folder to save demos obtained through the 'Download demo' button to.
 
-        :param uid: The Steam UserID64 that the resulting demos belong to.
+        :param uid: The Steam ID64 that the demos in this result set belongs to.
 
-        :param resultslist: The results as given by `uncletopia.com/api/demos`.
+        :param resultslist: An array of dictionaries representing each demo found from `uncletopia.com/api/demos` and related metadata.
         """
         self.root = tk.Tk()
         self.root.geometry("480x128")
