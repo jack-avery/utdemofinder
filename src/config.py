@@ -22,27 +22,24 @@ class Config:
 
         Create the file with the default if it does not exist.
         """
-        if os.path.exists(CONFIG_PATH):
-            with open(CONFIG_PATH, "r") as cfgfile:
+        if not os.path.exists(CONFIG_PATH):
+            self.populate_default()
+            return
+
+        with open(CONFIG_PATH, "r") as cfgfile:
                 cfg = json.loads(cfgfile.read())
-        
-        else:
-            cfg = self.write(DEFAULT)
-        
+
         self.demo_folder = cfg['demo_folder']
             
-    def write(self, cfg: dict):
-        """
-        Write `cfg` to `CONFIG_PATH` and return what was written if successful.
-
-        :param cfg: The configuration to write.
-        """
+    def write(self):
         with open(CONFIG_PATH, "w") as cfgfile:
             cfgfile.write(json.dumps(self.json(), indent=4))
-            return cfg
+    
+    def populate_default(self):
+        self.demo_folder = False
+        self.write()
     
     def json(self):
         return {
             "demo_folder": self.demo_folder
         }
-
