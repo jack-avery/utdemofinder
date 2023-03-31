@@ -1,4 +1,4 @@
-VERSION = "1.3"
+VERSION = "1.3.1"
 """The current version of UTDemoFinder."""
 
 PROMPT_FOLDER_TEXT = "Select a folder to save demos to (/tf folder?)"
