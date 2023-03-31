@@ -76,7 +76,7 @@ class SearchWindow:
 
         # [Go]
         tk.Button(
-            self.root, text="Go", command=get_demos, bg="#004400", fg="white"
+            self.root, text="Go", command=self.search, bg="#004400", fg="white"
         ).place(x=0, y=96, width=480, height=36)
 
         # Activity Log
@@ -117,6 +117,18 @@ class SearchWindow:
             self.folder_input.insert(tk.END, PROMPT_FOLDER_TEXT)
 
         self.folder_input.configure(state=tk.DISABLED)
+    
+    def search(self):
+        """
+        Grab information from the input fields and run `get_demos`.
+        """
+
+        demofolder = self.cfg.demo_folder
+        id = self.search_id64.get("1.0", "end-1c")
+        map = self.search_map.get("1.0", "end-1c")
+        id_with = self.search_with.get("1.0", "end-1c")
+
+        get_demos(demofolder, id, map, id_with, self)
 
     def log(self, l: str):
         """

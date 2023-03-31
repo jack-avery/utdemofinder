@@ -49,13 +49,14 @@ class ResultsWindow:
             bg="#555555",
             fg="white",
         ).place(x=0, y=0, width=86, height=24)
-        tk.Button(
-            self.root,
-            text="Download demo",
-            command=self.download_demo,
-            bg="#555555",
-            fg="white",
-        ).place(x=88, y=0, width=102, height=24)
+        if demofolder:
+            tk.Button(
+                self.root,
+                text="Download demo",
+                command=self.download_demo,
+                bg="#555555",
+                fg="white",
+            ).place(x=88, y=0, width=102, height=24)
 
         # Navigation buttons
         tk.Button(
