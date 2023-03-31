@@ -9,8 +9,8 @@
 2. Download the Source Code:
 > Using [git](https://git-scm.com/downloads): `git clone https://github.com/jack-avery/utdemofinder` <br/>
 > Or, click on **Code** at the top right and **Download ZIP**.
-3. Install dependencies: `python -m pip install -r requirements.txt`.
-4. Open `main.py`.
+3. Run `setup.py` to install dependencies.
+4. Open `main.pyw`.
 5. Insert a valid ID into the Steam ID64 field.
 > This normally looks something like `76561198027298961`<br/>
 6. Press `Go` and the results window will open.
