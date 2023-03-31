@@ -158,6 +158,3 @@ class ResultsWindow:
 
         with open(filename, "w") as file:
             file.write(resultslist_raw)
-
-if __name__ == "__main__":
-    ResultsWindow()
