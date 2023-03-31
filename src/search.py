@@ -6,8 +6,10 @@ from tkinter import filedialog
 
 import requests
 
-from src.results import ResultsWindow
+from src.config import Config
 from src.defines import *
+from src.results import ResultsWindow
+
 
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
@@ -28,6 +30,10 @@ class SearchWindow:
         self.root.configure(bg="#444444")
         self.root.resizable(0, 0)
 
+        # Load user config
+        self.cfg = Config()
+        self.cfg.read()
+
         # Demo folder: [...] [Folder Display]
         tk.Label(master=self.root, text="Demo folder:", bg="#444444", fg="white").place(
             x=0, y=0, width=70, height=24
@@ -39,13 +45,7 @@ class SearchWindow:
             master=self.root, bg="#440000", fg="white", height=1, width=8, wrap="none"
         )
         self.folder_input.place(x=100, y=0, width=380, height=24)
-
-        demo_folder = PROMPT_FOLDER_TEXT
-        if os.path.exists(CONFIG_PATH):
-            with open(CONFIG_PATH, "r") as cfgfile:
-                cfg = json.loads(cfgfile.read())
-            demo_folder = cfg["demo_folder"]
-        self.set_folder_input(demo_folder)
+        self.set_folder_input(self.cfg.demo_folder)
 
         # Steam ID64: [Text Input]
         tk.Label(master=self.root, text="Steam ID64:", bg="#444444", fg="white").place(
@@ -76,7 +76,7 @@ class SearchWindow:
 
         # [Go]
         tk.Button(
-            self.root, text="Go", command=self.get_demos, bg="#004400", fg="white"
+            self.root, text="Go", command=get_demos, bg="#004400", fg="white"
         ).place(x=0, y=96, width=480, height=36)
 
         # Activity Log
@@ -97,10 +97,8 @@ class SearchWindow:
             return
 
         self.set_folder_input(folder)
-        with open(CONFIG_PATH, "w") as cfgfile:
-            data = {"demo_folder": folder}
-
-            cfgfile.writelines(json.dumps(data, indent=4))
+        self.cfg.demo_folder = folder
+        self.cfg.write()
 
     def set_folder_input(self, folder):
         """
@@ -110,62 +108,15 @@ class SearchWindow:
         """
         self.folder_input.configure(state=tk.NORMAL)
         self.folder_input.delete("1.0", "end-1c")
-        self.folder_input.insert(tk.END, folder)
-        self.folder_input.configure(state=tk.DISABLED)
 
-        if folder != PROMPT_FOLDER_TEXT:
+        if folder:
             self.folder_input.configure(bg="#004400")
+            self.folder_input.insert(tk.END, folder)
+        else:
+            self.folder_input.configure(bg="#440000")
+            self.folder_input.insert(tk.END, PROMPT_FOLDER_TEXT)
 
-    def get_demos(self):
-        """
-        Get user demos from the specified criteria and open the results window.
-        """
-        self.log("")
-        self.log("Searching...")
-
-        demofolder = self.folder_input.get("1.0", "end-1c")
-        id = self.search_id64.get("1.0", "end-1c")
-        map = self.search_map.get("1.0", "end-1c")
-        id_with = self.search_with.get("1.0", "end-1c")
-
-        if not STEAMID_RE.match(id):
-            self.log('Invalid ID64 for "Steam ID".')
-            return
-
-        if id_with:
-            if not STEAMID_RE.match(id_with):
-                self.log('Invalid ID64 for "Played With".')
-                return
-
-        data = {
-            "steamId": id,
-            "mapName": map,
-            "serverIds": [],  # todo: create reasonable UI for this?
-        }
-
-        headers = {"Content-Type": "application/json; charset=UTF-8", "Accept": "*/*"}
-
-        response = requests.post(
-            "https://uncletopia.com/api/demos", json=data, headers=headers
-        )
-        if response.status_code != 201:
-            self.log(f"Returned {response.status_code}: cannot continue")
-            return
-        results = response.json()["result"]
-
-        if id_with and results:
-            sorted = []
-            for result in results:
-                if id_with in result["stats"]:
-                    sorted.append(result)
-            results = sorted
-
-        if not results:
-            self.log(f"Couldn't find any demos with this criteria!")
-            return
-
-        self.log(f"Found {len(results)} demo(s)")
-        _ = ResultsWindow(demofolder, id, results)
+        self.folder_input.configure(state=tk.DISABLED)
 
     def log(self, l: str):
         """
@@ -175,6 +126,59 @@ class SearchWindow:
         """
         self.infobox.insert(tk.END, f"{l}")
         self.infobox.yview(tk.END)
+
+def get_demos(demofolder: str, id: str, map: str = "", id_with: str = "", root: SearchWindow = None):
+    """
+    Get user demos from the specified criteria and open the results window.
+    """
+    if root:
+        root.log("")
+        root.log("Searching...")
+
+    if not STEAMID_RE.match(id):
+        if root:
+            root.log('Invalid ID64 for "Steam ID".')
+        return
+
+    if id_with:
+        if not STEAMID_RE.match(id_with):
+            if root:
+                root.log('Invalid ID64 for "Played With".')
+            return
+
+    data = {
+        "steamId": id,
+        "mapName": map,
+        "serverIds": [],  # todo: create reasonable UI for this?
+    }
+
+    headers = {"Content-Type": "application/json; charset=UTF-8", "Accept": "*/*"}
+
+    response = requests.post(
+        "https://uncletopia.com/api/demos", json=data, headers=headers
+    )
+    if response.status_code != 201:
+        if root:
+            root.log(f"Returned {response.status_code}: cannot continue")
+        return
+    results = response.json()["result"]
+
+    if id_with and results:
+        sorted = []
+        for result in results:
+            if id_with in result["stats"]:
+                sorted.append(result)
+        results = sorted
+
+    if not results:
+        if root:
+            root.log(f"Couldn't find any demos with this criteria!")
+        return
+
+    if root:
+        root.log(f"Found {len(results)} demo(s)")
+
+    _ = ResultsWindow(demofolder, id, results)
 
 if __name__ == "__main__":
     _ = SearchWindow()
