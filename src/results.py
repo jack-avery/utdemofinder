@@ -1,3 +1,4 @@
+import logging
 import os
 import tkinter as tk
 from tkinter import filedialog
@@ -5,6 +6,8 @@ from tkinter import filedialog
 import urllib3
 
 from src.defines import *
+
+logger = logging.getLogger("utdemofinder")
 
 
 class ResultsWindow:
@@ -31,6 +34,12 @@ class ResultsWindow:
 
         :param resultslist: An array of dictionaries representing each demo found from `uncletopia.com/api/demos` and related metadata.
         """
+        logger.info("Creating new Results Window")
+
+        logger.debug(f"demofolder: {demofolder}")
+        logger.debug(f"uid: {uid}")
+        logger.debug(f"resultslist: ({len(resultslist)}) {resultslist}")
+
         self.root = tk.Tk()
         self.root.geometry("480x128")
         self.root.title(f"utdemofinder {VERSION} results: {uid}")
@@ -100,6 +109,10 @@ class ResultsWindow:
 
         :param index: The index in `resultslist` to display.
         """
+        logger.debug(
+            f"showing result {index+1} of {len(self.resultslist)} ({self.resultslist[index]['demo_id']})"
+        )
+
         self.result_text.configure(state=tk.NORMAL)
         self.result_text.delete("1.0", "end-1c")
         self.result_text.insert(
@@ -116,6 +129,8 @@ class ResultsWindow:
         url = f"https://uncletopia.com/demos/{result['demo_id']}"
         path = f"{self.demofolder}/{result['title']}"
 
+        logger.info(f"Downloading demo #{result['demo_id']} to {path}...")
+
         http = urllib3.PoolManager()
         r = http.request("GET", url, preload_content=False)
         with open(path, "wb") as out:
@@ -125,6 +140,8 @@ class ResultsWindow:
                     break
                 out.write(data)
         r.release_conn()
+
+        logger.info(f"Download of demo #{result['demo_id']} completed")
 
     def text_result(self, result):
         """
@@ -157,6 +174,8 @@ class ResultsWindow:
         resultslist_raw = ""
         for result in self.resultslist:
             resultslist_raw += self.text_result(result)
+
+        logger.info(f"Saving results list to {filename}")
 
         with open(filename, "w") as file:
             file.write(resultslist_raw)

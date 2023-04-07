@@ -1,3 +1,4 @@
+import logging
 import re
 import tkinter as tk
 from tkinter import filedialog
@@ -12,6 +13,8 @@ from src.results import ResultsWindow
 STEAMID_RE = re.compile(r"\d+")
 """Regex to compare Steam UserID64s to to validate"""
 
+logger = logging.getLogger("utdemofinder")
+
 
 class SearchWindow:
     """
@@ -22,6 +25,8 @@ class SearchWindow:
         """
         Create a new instance of a `utdemofinder` GUI window.
         """
+        logger.info("Creating new Search Window")
+
         self.root = tk.Tk()
         self.root.geometry("480x280")
         self.root.title(f"utdemofinder {VERSION} search")
@@ -178,14 +183,28 @@ def get_demos(
 
     headers = {"Content-Type": "application/json; charset=UTF-8", "Accept": "*/*"}
 
+    logger.info(
+        "Searching with parameters:\n"
+        + f"- id:      {id}\n"
+        + f"- map:     {map}\n"
+        + f"- id_with: {id_with}"
+    )
+
     response = requests.post(
         "https://uncletopia.com/api/demos", json=data, headers=headers
     )
+    logger.debug(response.json())
+
     if response.status_code != 201:
         if root:
             root.log(f"Returned {response.status_code}: cannot continue")
         return
+
     results = response.json()["result"]
+    if not results:
+        if root:
+            root.log(f"Couldn't find any demos with this criteria!")
+        return
 
     if id_with and results:
         sorted = []
@@ -201,9 +220,6 @@ def get_demos(
 
     if root:
         root.log(f"Found {len(results)} demo(s)")
+        logger.info(f"Found {len(results)} demo(s)")
 
     _ = ResultsWindow(demofolder, id, results)
-
-
-if __name__ == "__main__":
-    _ = SearchWindow()
