@@ -6,10 +6,12 @@ import urllib3
 
 from src.defines import *
 
+
 class ResultsWindow:
     """
     `tkinter`-based GUI for displaying user demos obtained using `src.search.SearchWindow`.
     """
+
     demofolder: str
     """The folder to save demos obtained through the 'Download demo' button to."""
 
@@ -18,7 +20,6 @@ class ResultsWindow:
 
     resultslist: list
     """An array of dictionaries representing each demo found from `uncletopia.com/api/demos` and related metadata."""
-
 
     def __init__(self, demofolder: str, uid: str, resultslist: list):
         """

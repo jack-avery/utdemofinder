@@ -4,9 +4,8 @@ import os
 CONFIG_PATH = "config.txt"
 """Path to the user config file to use"""
 
-DEFAULT = {
-    "demo_folder": False 
-}
+DEFAULT = {"demo_folder": False}
+
 
 class Config:
     """
@@ -27,19 +26,17 @@ class Config:
             return
 
         with open(CONFIG_PATH, "r") as cfgfile:
-                cfg = json.loads(cfgfile.read())
+            cfg = json.loads(cfgfile.read())
 
-        self.demo_folder = cfg['demo_folder']
-            
+        self.demo_folder = cfg["demo_folder"]
+
     def write(self):
         with open(CONFIG_PATH, "w") as cfgfile:
             cfgfile.write(json.dumps(self.json(), indent=4))
-    
+
     def populate_default(self):
         self.demo_folder = False
         self.write()
-    
+
     def json(self):
-        return {
-            "demo_folder": self.demo_folder
-        }
+        return {"demo_folder": self.demo_folder}
