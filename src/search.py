@@ -142,7 +142,7 @@ class SearchWindow:
 
         params = {"id": id, "map": map, "id_with": id_with}
 
-        resultslist = get_demos(demofolder, id, map, id_with, self)
+        resultslist = get_demos(id, map, id_with, self)
 
         _ = ResultsWindow(demofolder, params, resultslist)
 
