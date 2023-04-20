@@ -24,30 +24,30 @@ class ResultsWindow:
     resultslist: list
     """An array of dictionaries representing each demo found from `uncletopia.com/api/demos` and related metadata."""
 
-    def __init__(self, demofolder: str, uid: str, resultslist: list):
+    def __init__(self, demofolder: str, params: dict, resultslist: list):
         """
         Create a new instance of a `utdemofinder` results GUI window.
 
         :param demofolder: The folder to save demos obtained through the 'Download demo' button to.
 
-        :param uid: The Steam ID64 that the demos in this result set belongs to.
+        :param uid: `dict` containing the parameters used during search.
 
         :param resultslist: An array of dictionaries representing each demo found from `uncletopia.com/api/demos` and related metadata.
         """
         logger.info("Creating new Results Window")
 
         logger.debug(f"demofolder: {demofolder}")
-        logger.debug(f"uid: {uid}")
+        logger.debug(f"params: {params}")
         logger.debug(f"resultslist: ({len(resultslist)}) {resultslist}")
 
         self.root = tk.Tk()
         self.root.geometry("480x128")
-        self.root.title(f"utdemofinder {VERSION} results: {uid}")
+        self.root.title(f"utdemofinder {VERSION} results: {params['id']}")
         self.root.configure(bg="#444444")
         self.root.resizable(0, 0)
 
         self.demofolder = demofolder
-        self.uid = uid
+        self.params = params
         self.resultslist = resultslist
         self.viewindex = 0
 
@@ -165,13 +165,20 @@ class ResultsWindow:
             defaultextension=".txt",
             filetypes=[("Text files", "*.txt")],
             initialdir=os.curdir,
-            initialfile=f"utdemofinder results - {self.uid}",
+            initialfile=f"utdemofinder results - {self.params['id']}",
         )
 
         if not filename:
             return
 
         resultslist_raw = ""
+        resultslist_raw += f"Search results for {self.params['id']}"
+        if self.params["id_with"]:
+            resultslist_raw += f" played with {self.params['id_with']}"
+        if self.params["map"]:
+            resultslist_raw += f" on {self.params['map']}"
+        resultslist_raw += "\n\n"
+
         for result in self.resultslist:
             resultslist_raw += self.text_result(result)
 

@@ -140,7 +140,11 @@ class SearchWindow:
         map = self.search_map.get("1.0", "end-1c")
         id_with = self.search_with.get("1.0", "end-1c")
 
-        get_demos(demofolder, id, map, id_with, self)
+        params = {"id": id, "map": map, "id_with": id_with}
+
+        resultslist = get_demos(demofolder, id, map, id_with, self)
+
+        _ = ResultsWindow(demofolder, params, resultslist)
 
     def log(self, l: str):
         """
@@ -153,28 +157,27 @@ class SearchWindow:
 
 
 def get_demos(
-    demofolder: str,
     id: str,
     map: str = "",
     id_with: str = "",
-    root: SearchWindow = None,
+    window: SearchWindow = None,
 ):
     """
     Get user demos from the specified criteria and open the results window.
     """
-    if root:
-        root.log("")
-        root.log("Searching...")
+    if window:
+        window.log("")
+        window.log("Searching...")
 
     if not STEAMID_RE.match(id):
-        if root:
-            root.log('Invalid ID64 for "Steam ID".')
+        if window:
+            window.log('Invalid ID64 for "Steam ID".')
         return
 
     if id_with:
         if not STEAMID_RE.match(id_with):
-            if root:
-                root.log('Invalid ID64 for "Played With".')
+            if window:
+                window.log('Invalid ID64 for "Played With".')
             return
 
     data = {
@@ -198,14 +201,14 @@ def get_demos(
     logger.debug(response.json())
 
     if response.status_code != 201:
-        if root:
-            root.log(f"Returned {response.status_code}: cannot continue")
+        if window:
+            window.log(f"Returned {response.status_code}: cannot continue")
         return
 
     results = response.json()["result"]
     if not results:
-        if root:
-            root.log(f"Couldn't find any demos with this criteria!")
+        if window:
+            window.log(f"Couldn't find any demos with this criteria!")
         return
 
     if id_with and results:
@@ -216,12 +219,12 @@ def get_demos(
         results = sorted
 
     if not results:
-        if root:
-            root.log(f"Couldn't find any demos with this criteria!")
+        if window:
+            window.log(f"Couldn't find any demos with this criteria!")
         return
 
-    if root:
-        root.log(f"Found {len(results)} demo(s)")
+    if window:
+        window.log(f"Found {len(results)} demo(s)")
         logger.info(f"Found {len(results)} demo(s)")
 
-    _ = ResultsWindow(demofolder, id, results)
+    return results
