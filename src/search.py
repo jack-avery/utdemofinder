@@ -124,7 +124,9 @@ class SearchWindow:
             self.folder_input.insert(tk.END, folder)
         else:
             self.folder_input.configure(bg="#440000")
-            self.folder_input.insert(tk.END, PROMPT_FOLDER_TEXT)
+            self.folder_input.insert(
+                tk.END, "Select a folder to save demos to (/tf folder?)"
+            )
 
         self.folder_input.configure(state=tk.DISABLED)
 
