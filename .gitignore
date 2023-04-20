@@ -3,6 +3,7 @@ build
 dist
 __pycache__
 *.spec
+.venv
 
 logs
 config.txt
