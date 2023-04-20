@@ -9,10 +9,9 @@
 2. Download the Source Code:
 > Using [git](https://git-scm.com/downloads): `git clone https://github.com/jack-avery/utdemofinder` <br/>
 > Or, click on **Code** at the top right and **Download ZIP**.
-3. Run `setup.py` to install dependencies.
-4. Open `main.pyw`.
-5. Insert a valid ID into the Steam ID64 field.
+3. Run `main.pyw`.
+4. Insert a valid ID into the Steam ID64 field.
 > This normally looks something like `76561198027298961`<br/>
-6. Press `Go` and the results window will open.
+5. Press `Go` and the results window will open.
 
 I recommend you enter your `steamapps/common/Team Fortress 2/tf` folder into the "Demo folder" field so that you can download demos directly into your TF2 folder for easy access through `demoui`.
