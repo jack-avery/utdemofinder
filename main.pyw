@@ -1,7 +1,10 @@
 import logging
 import os
 import sys
+import subprocess
 import time
+
+subprocess.call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 
 from src.search import SearchWindow
 from src.defines import VERSION
