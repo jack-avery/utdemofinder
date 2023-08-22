@@ -1,3 +1,6 @@
+# This no longer works as the https://uncletopia.com/api/demos endpoint now requires an active auth token.
+I may fix this eventually but until then I will keep it archived.
+
 ## utdemofinder
 
 **utdemofinder** is a utility program for the video game servers **Uncletopia** for **Team Fortress 2** to provide a simple user interface for moderators to search for SourceTV demos for specific users, including games played with other users.
